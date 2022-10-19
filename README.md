@@ -3,7 +3,7 @@ Pen and Pencil Gluttonous snake,you can print it on A4 paper. support two player
 纸笔游戏--贪吃蛇，打印出来，支持两个人玩。  
 
 # Demo Web
-演示网站 [数独生成器]("https://eattonton.github.io/PaperSnakeGame/index.html")   
+演示网站 [纸笔游戏]("https://eattonton.github.io/PaperSnakeGame/index.html")   
 https://eattonton.github.io/PaperSnakeGame/index.html
 
 # Introduction

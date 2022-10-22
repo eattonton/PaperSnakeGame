@@ -18,24 +18,8 @@ function Start() {
 
 }
 
+//画
 function CreateA4(category){
-    var toastDlg = new Toast({
-        text:"生成中"
-    });
-    toastDlg.Show();
-    //ctx.clearRect(0,0,boardWidth,boardHeight);
-    ctx.fillStyle = "white";
-    ctx.fillRect(0,0,boardWidth,boardHeight);
-    
-    //1.title
-    WriteText("纸笔游戏--贪吃蛇", 12.0, 2.0, 1.0);
-    if(category == 1){
-        CreateBase();
-    }else if(category == 2){
-        hard= 8;
-        CreateBase();
-        CreateBlocks();
-    }
     //二维码
     let loadImg0 = function(){
         DrawImage('./qr.png',()=>{
@@ -44,24 +28,62 @@ function CreateA4(category){
         },[50, 50, 180, 180]);
     } 
     //示意图
-    let loadImg1 = function(){
-        DrawImage('./image1.png',()=>{
+    let loadImg1 = function(url1,params){
+        DrawImage(url1,()=>{
             loadImg0();
-        },[50, 650, 180, 180]);
+        }, params);
     }
 
-    loadImg1();
-    //说明
-    let strDesc ="玩法说明\n";
-    strDesc += "两人轮流画直线,每次向\n周围八个点中选一个画\n线,可以堵对方的路,不能\n交叉自己或别人的线,没\n路走就算输。";
-    WriteText(strDesc,1,6,0.5);
+    var toastDlg = new Toast({
+        text:"生成中"
+    });
+    toastDlg.Show();
+    //ctx.clearRect(0,0,boardWidth,boardHeight);
+    ctx.fillStyle = "white";
+    ctx.fillRect(0,0,boardWidth,boardHeight);
+    
+    rowNumber = 10;
+    colNumber = 12;
+    datas = [];
+    //1.title
+    if(category == 1 || category == 2){
+        WriteText("纸笔游戏--贪吃蛇", 12.0, 2.0, 1.0);
+        CreateDot();
+        loadImg1('./image1.png',[250, 50, 180, 180]);
+         //说明
+        let strDesc ="玩法说明\n";
+        strDesc += "两人轮流画直线,每次向\n周围八个点中选一个画\n线,可以堵对方的路,不能\n交叉自己或别人的线,没\n路走就算输。";
+        WriteText(strDesc,1,6,0.5);
+    }else if(category == 3){
+        rowNumber = 6;
+        colNumber = 6;
+        WriteText("纸笔游戏--画方格", 12.0, 2.0, 1.0);
+        WriteText("数量:A____    B____",4, 5, 0.5);
+        CreateDot(4, 6.5, 1.5);
+        WriteText("数量:A____    B____",18, 5, 0.5);
+        CreateDot(18, 6.5, 1.5);
+        loadImg1('./image2.png',[250, 50, 180, 180]);
+
+        let strDesc ="玩法说明\n";
+        strDesc += "双方轮流在相邻的两点之间画垂直或者水平直线，不能是斜线和跨格。\n如果画成一个方格，就占领这个方格，可以用A或者B进行标记，";
+        strDesc += "并获\n得再次画一条线的机会。最后统计占领的格子数量，数量多的为获胜者。";
+        WriteText(strDesc,6, 16, 0.5);
+    }
+    
+    if(category == 2){
+        CreateBlocks();
+    }
+   
+
+   
 }
 //A4 基础
-function CreateBase() {
+function CreateDot(startX, startY, dstep, dR) {
     //2.draw box
-    let startX = 7;
-    let startY = 4;
-    let dstep = 1.5;
+    startX = startX || 8.5;
+    startY = startY || 5;
+    dstep = dstep || 1.5;
+    dR = dR || 0.1;
     
     for (let j = 0; j < rowNumber; j++) {
         let cy = j*dstep +startY;
@@ -70,7 +92,7 @@ function CreateBase() {
             //0.记录点
             datas.push(new Array(cx, cy));
             //1.绘制
-            DrawCircle(cx, cy, 0.1, 0.05,0, "Gray");
+            DrawCircle(cx, cy, dR, 0.05,0, "Gray");
         }
     }
  
@@ -79,6 +101,7 @@ function CreateBase() {
 function CreateBlocks(){
     let num = RandomInt(2,4);
     for(let i=0;i<num;i++){
+        m_randomDir2 = 0;
         CreateBlock();
     }
 }

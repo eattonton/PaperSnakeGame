@@ -9,6 +9,7 @@ var datas = [];
 var hard = 8;
 
 var m_LineStyleWidth = 0.3;
+var m_CircleStyleWidth = 0.05;
 //记录划线的随机方向
 var m_randomDir2 = 0;
 //////////////////////
@@ -44,11 +45,14 @@ function CreateA4(category){
     
     rowNumber = 10;
     colNumber = 12;
-    datas = [];
+    
     //1.title
     if(category == 1 || category == 2){
         WriteText("纸笔游戏--贪吃蛇", 12.0, 2.0, 1.0);
-        CreateDot();
+        CreateDots();
+        if(category == 2){
+            CreateBlocks();
+        }  
         loadImg1('./image1.png',[250, 50, 180, 180]);
          //说明
         let strDesc ="玩法说明\n";
@@ -59,45 +63,73 @@ function CreateA4(category){
         colNumber = 6;
         WriteText("纸笔游戏--画方格", 12.0, 2.0, 1.0);
         WriteText("数量:A____    B____",4, 5, 0.5);
-        CreateDot(4, 6.5, 1.5);
+        CreateDots(4, 6.5, 1.5);
         WriteText("数量:A____    B____",18, 5, 0.5);
-        CreateDot(18, 6.5, 1.5);
+        CreateDots(18, 6.5, 1.5);
         loadImg1('./image2.png',[250, 50, 180, 180]);
 
         let strDesc ="玩法说明\n";
         strDesc += "双方轮流在相邻的两点之间画垂直或者水平直线，不能是斜线和跨格。\n如果画成一个方格，就占领这个方格，可以用A或者B进行标记，";
         strDesc += "并获\n得再次画一条线的机会。最后统计占领的格子数量，数量多的为获胜者。";
         WriteText(strDesc,6, 16, 0.5);
+    }else if(category == 4){
+        rowNumber = 8;
+        colNumber = 8;
+        WriteText("纸笔游戏--开心消消乐", 10.0, 2.0, 1.0);
+        CreateDots(3, 6, 1.2, 0.4);
+        CreateHiddenBlocks();
+        CreateDots(17, 6, 1.2, 0.4);
+        CreateHiddenBlocks();
+        loadImg1('./image3.png',[250, 50, 180, 180]);
+       
+        let strDesc ="玩法说明\n";
+        strDesc += "两个玩家轮流划掉1到3个圆，即每次可以划掉1，2，3个圆，但只能画直线。\n当圆被全部划掉时，游戏结束。";
+        strDesc += "划掉最后一个圆的人输掉。";
+        WriteText(strDesc,6, 17, 0.5);
     }
-    
-    if(category == 2){
-        CreateBlocks();
-    }
-   
-
-   
 }
-//A4 基础
-function CreateDot(startX, startY, dstep, dR) {
+//A4 画点
+function CreateDots(startX, startY, dstep, dR) {
     //2.draw box
     startX = startX || 8.5;
     startY = startY || 5;
     dstep = dstep || 1.5;
     dR = dR || 0.1;
-    
+
+    datas = [];
     for (let j = 0; j < rowNumber; j++) {
         let cy = j*dstep +startY;
         for (let i = 0; i < colNumber; i++) {
             let cx = i*dstep +startX;
             //0.记录点
-            datas.push(new Array(cx, cy));
+            datas.push(new Array(cx, cy, dR));
             //1.绘制
-            DrawCircle(cx, cy, dR, 0.05,0, "Gray");
+            DrawCircle(cx, cy, dR, m_CircleStyleWidth, 0, "Gray");
         }
     }
- 
 }
 
+//绘制隐藏圆
+function CreateHiddenBlocks(){
+    let num = RandomInt(0,30);
+    for(let i=0;i<num;i++){
+        let num2 = RandomInt(0,10);
+        if(num2 < 5){
+            continue;
+        }
+        let posArr = RandomPositions();
+        let pos1 = GetPosition(posArr[0], posArr[1]);
+        let pos2 = GetPosition(posArr[2], posArr[3]);
+    
+        let point1 = datas[pos1];
+        let point2 = datas[pos2];
+ 
+        DrawCircle(point1[0],point1[1],point1[2],m_CircleStyleWidth+0.02, 0, "White");
+    }
+}
+
+
+//绘制障碍
 function CreateBlocks(){
     let num = RandomInt(2,4);
     for(let i=0;i<num;i++){
@@ -105,6 +137,7 @@ function CreateBlocks(){
         CreateBlock();
     }
 }
+
 function CreateBlock(){
     //获得两点的线
     let posArr = RandomPositions();
@@ -126,6 +159,7 @@ function CreateBlock(){
     }
 }
 
+//计算随机位置
 function RandomPositions(){
     //计算 行 与 列
     let pos1 = RandomInt(0, rowNumber*colNumber-1);
@@ -134,6 +168,7 @@ function RandomPositions(){
     return colandrow.concat(colandrow2);
 }
 
+//计算随机位置的下一个位置
 function RandomPositionNext(pos1){
     let colandrow = GetColumnRow(pos1);
     //随机方向

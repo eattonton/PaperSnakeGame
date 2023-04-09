@@ -19,6 +19,13 @@ function Start() {
 
 }
 
+//跳转
+function GoToUrl(category){
+    if(category == 1){
+        location.href = "https://numbermaze.triweb.cn/index.html";
+    }
+}
+
 //画
 function CreateA4(category){
     //二维码

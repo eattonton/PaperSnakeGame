@@ -22,7 +22,14 @@ function Start() {
 //跳转
 function GoToUrl(category){
     if(category == 1){
+        //数字迷阵
         location.href = "https://numbermaze.triweb.cn/index.html";
+    }else if(category == 2){
+        //数织
+        location.href = "https://nonogram.triweb.cn/index.html";
+    }else if(category == 3){
+        //迷宫
+        location.href = "https://mazea4.triweb.cn/index.html";
     }
 }
 
